@@ -1,5 +1,7 @@
 using System;
+using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityStandardAssets.CrossPlatformInput;
 
 namespace UnityStandardAssets._2D
@@ -14,6 +16,9 @@ namespace UnityStandardAssets._2D
         public bool autoRunRight = true;
 
         public float autoRunSpeed = 0.5f;
+        public bool stoped = false;
+
+        public int secondsToRespawn = 3;
 
         private void Awake()
         {
@@ -33,6 +38,8 @@ namespace UnityStandardAssets._2D
 
         private void FixedUpdate()
         {
+
+
             bool crouch = false;
             // Read the inputs.
             if (crouchEnabled)
@@ -42,9 +49,28 @@ namespace UnityStandardAssets._2D
             if(!autoRunRight)
                 h = CrossPlatformInputManager.GetAxis("Horizontal");
 
+            if (stoped)
+                h = 0;
+
             // Pass all parameters to the character control script.
             m_Character.Move(h, crouch, m_Jump);
             m_Jump = false;
+        }
+
+        private void OnTriggerEnter2D(Collider2D other)
+        {
+            if (other.tag == "Finish")
+            {
+                stoped = true;
+
+                StartCoroutine(WaitForIt(secondsToRespawn));
+            }
+        }
+
+        IEnumerator WaitForIt(float waitTime)
+        {
+            yield return new WaitForSeconds(waitTime);
+            SceneManager.LoadScene(SceneManager.GetSceneAt(0).name);
         }
     }
 }

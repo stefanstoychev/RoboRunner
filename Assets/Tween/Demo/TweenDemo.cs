@@ -71,7 +71,7 @@ namespace DigitalRuby.Tween
             });
         }
 
-        private void TweenRotate()
+        public void TweenRotate()
         {
             float startAngle = Circle.transform.rotation.eulerAngles.z;
             float endAngle = startAngle + 720.0f;
@@ -94,6 +94,7 @@ namespace DigitalRuby.Tween
         private void Start()
         {
             spriteRenderer = Circle.GetComponent<SpriteRenderer>();
+            TweenRotate();
         }
 
         private void Update()
